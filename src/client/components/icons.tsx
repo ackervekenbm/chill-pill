@@ -36,3 +36,9 @@ export const SettingsIcon = () => (
     <circle cx="9" cy="17" r="2" />
   </Icon>
 )
+export const NoteIcon = () => (
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label="has a note">
+    <path d="M5 4h14v12l-4 4H5z" />
+    <path d="M15 20v-4h4M8 9h8M8 13h4" />
+  </svg>
+)

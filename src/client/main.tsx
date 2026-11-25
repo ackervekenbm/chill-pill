@@ -9,6 +9,7 @@ import './styles/themes.css'
 import './styles/shell.css'
 import './styles/today.css'
 import './styles/trend.css'
+import './styles/history.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

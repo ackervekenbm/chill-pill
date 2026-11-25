@@ -4,8 +4,9 @@
 import { useCallback, useMemo, useRef, useState, type FormEvent } from 'react'
 import type { NewReading, Reading } from '../../shared/types'
 import { useNow } from '../useNow'
-import { dayAverages, shouldAdvance } from '../../shared/stats'
+import { dayAverages } from '../../shared/stats'
 import { fieldError, newReadingSchema } from '../../shared/validation'
+import { FIELDS, ReadingFields, type Field } from './ReadingFields'
 import { UndoToast } from './UndoToast'
 
 interface Props {
@@ -14,25 +15,17 @@ interface Props {
   onUndo: (id: number) => Promise<void>
 }
 
-type Field = 'sys' | 'dia' | 'pulse'
-const FIELDS: Array<{ key: Field; label: string; hint: 'next' | 'done' }> = [
-  { key: 'sys', label: 'SYS', hint: 'next' },
-  { key: 'dia', label: 'DIA', hint: 'next' },
-  { key: 'pulse', label: 'PULSE', hint: 'done' },
-]
-
 export function TodayCard({ readings, onAdd, onUndo }: Props) {
   const now = useNow()
   const [text, setText] = useState<Record<Field, string>>({ sys: '', dia: '', pulse: '' })
   const [note, setNote] = useState('')
   const [noteOpen, setNoteOpen] = useState(false)
   const [picked, setPicked] = useState<string | null>(null) // null = follow the clock
-  const [blurred, setBlurred] = useState<Record<string, boolean>>({})
   const [saving, setSaving] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [banner, setBanner] = useState<string | null>(null)
   const [saved, setSaved] = useState<{ id: number; n: number } | null>(null)
-  const refs = useRef<Record<Field, HTMLInputElement | null>>({ sys: null, dia: null, pulse: null })
+  const sysRef = useRef<HTMLInputElement | null>(null)
   const inFlight = useRef(false)
 
   const today = now.slice(0, 10)
@@ -40,25 +33,16 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
   const count = day?.count ?? 0
   const takenAt = picked ?? now
 
-  // Range errors wait until the value could be complete (or the field is left), so typing '1' doesn't flash red.
-  const liveErr = (f: Field) => (blurred[f] || shouldAdvance(f, text[f]) ? fieldError(f, text[f]) : null)
-  const fieldErr = (f: Field) => errors[f] ?? liveErr(f)
   const complete = FIELDS.every((f) => text[f.key].trim() !== '' && !fieldError(f.key, text[f.key]))
   const parsed = complete
     ? newReadingSchema.safeParse({ takenAt, sys: Number(text.sys), dia: Number(text.dia), pulse: Number(text.pulse), note })
     : null
-  const diaMsg = errors.dia ?? liveErr('dia') ?? parsed?.error?.issues.find((i) => i.path[0] === 'dia')?.message ?? null
+  const diaExtra = parsed?.error?.issues.find((i) => i.path[0] === 'dia')?.message ?? null
   const valid = !!parsed?.success
 
   const edit = (f: Field, v: string) => {
     setText((t) => ({ ...t, [f]: v }))
     setErrors((e) => Object.fromEntries(Object.entries(e).filter(([k]) => k !== f)))
-    const i = FIELDS.findIndex((x) => x.key === f)
-    if (v && !fieldError(f, v) && shouldAdvance(f, v) && i < 2) {
-      const el = refs.current[FIELDS[i + 1].key]
-      el?.focus()
-      el?.select()
-    }
   }
 
   const submit = useCallback(
@@ -76,7 +60,7 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
         setNoteOpen(false)
         setPicked(null)
         setSaved({ id: r.id, n: r.takenAt.startsWith(today) ? count + 1 : count })
-        refs.current.sys?.focus()
+        sysRef.current?.focus()
       } catch (err) {
         const { field, message } = err as { field?: string; message?: string }
         if (field) setErrors({ [field]: message ?? 'Invalid value' })
@@ -120,31 +104,7 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
       </div>
 
       <form onSubmit={(e) => void submit(e)} noValidate>
-        <div className="inputs">
-          {FIELDS.map((f, i) => (
-            <div key={f.key} className="in-wrap">
-              <input
-                ref={(el) => { refs.current[f.key] = el }}
-                id={`today-${f.key}`}
-                className="in-box"
-                inputMode="numeric"
-                enterKeyHint={f.hint}
-                autoComplete="off"
-                autoFocus={i === 0}
-                maxLength={3}
-                placeholder="–"
-                aria-label={f.label}
-                aria-invalid={!!(f.key === 'dia' ? diaMsg : fieldErr(f.key))}
-                aria-describedby={`today-${f.key}-err`}
-                value={text[f.key]}
-                onChange={(e) => edit(f.key, e.target.value)}
-                onBlur={() => setBlurred((b) => ({ ...b, [f.key]: true }))}
-              />
-              <label htmlFor={`today-${f.key}`} className="label">{f.label}</label>
-              <div id={`today-${f.key}-err`} className="field-err">{f.key === 'dia' ? diaMsg : fieldErr(f.key)}</div>
-            </div>
-          ))}
-        </div>
+        <ReadingFields idPrefix="today" text={text} onChange={edit} errors={errors} diaExtra={diaExtra} autoFocus sysRef={sysRef} />
 
         <div className="today-meta">
           <button type="button" className="link-btn" aria-expanded={noteOpen} onClick={() => setNoteOpen((o) => !o)}>
