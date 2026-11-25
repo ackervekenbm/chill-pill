@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-server/
+data/
+*.db
+*.db-*
+*.xlsx
+*.csv
+.env
+.superpowers/
