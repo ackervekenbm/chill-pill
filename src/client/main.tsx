@@ -10,6 +10,7 @@ import './styles/shell.css'
 import './styles/today.css'
 import './styles/trend.css'
 import './styles/history.css'
+import './styles/settings.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

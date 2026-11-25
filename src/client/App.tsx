@@ -4,6 +4,8 @@
 import { useEffect, useState } from 'react'
 import { TodayCard } from './components/TodayCard'
 import { HistoryPanel } from './components/HistoryPanel'
+import { MedicationList } from './components/MedicationList'
+import { SettingsScreen } from './components/SettingsScreen'
 import { TrendCard } from './components/TrendCard'
 import { Shell, useIsDesktop, type View } from './components/Shell'
 import { applyTheme } from './theme'
@@ -37,18 +39,20 @@ export function App() {
   const history = (
     <HistoryPanel readings={data.readings} settings={data.settings} onAdd={data.addReading} onUpdate={data.updateReading} onRemove={data.removeReading} />
   )
-  const panel = (name: string) => <section className="card" aria-label={name}><h2 className="card-title">{name}</h2></section>
+  const meds = (
+    <MedicationList medications={data.medications} onAdd={data.addMedication} onUpdate={data.updateMedication} onDelete={data.removeMedication} />
+  )
   let body
-  if (view === 'settings') body = panel('Settings')
+  if (view === 'settings') body = <SettingsScreen settings={data.settings} onSave={data.saveSettings} />
   else if (desktop) {
     body = (
       <div className="desk-grid">
-        <div className="col">{today}{panel('Medication')}</div>
+        <div className="col">{today}{meds}</div>
         <div className="col">{trend}{history}</div>
       </div>
     )
   } else if (view === 'today') body = <>{today}{trend}</>
-  else body = view === 'history' ? history : panel('Medication')
+  else body = view === 'history' ? history : meds
 
   return <Shell view={view} onView={setView}>{body}</Shell>
 }
