@@ -1,0 +1,81 @@
+/* Colours from the approved mockups. --accent is for graphics and large marks;
+   --accent-solid is the AA-safe fill for text-bearing controls (filled chips,
+   buttons) with --accent-contrast on top. --med is purple in every theme. */
+:root,
+:root[data-theme='calm'] {
+  color-scheme: light;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --card-bg: var(--card);
+  --card-border: transparent;
+  --card-shadow: 0 1px 3px rgba(20, 32, 43, 0.08), 0 8px 24px rgba(20, 32, 43, 0.04);
+  --inset: #f4f6f8;
+  --chip: #eef1f4;
+  --text: #14202b;
+  --muted: #5d6b78;
+  --accent: #0f9488;
+  --accent-solid: #0d7d73;
+  --accent-contrast: #ffffff;
+  --primary-bg: var(--accent-solid);
+  --primary-fg: #ffffff;
+  --big-fill: var(--text);
+  --sys: #0f9488;
+  --dia: #5b7fd6;
+  --pulse: #d9822b;
+  --med: #8b5cf6;
+  --target-sys: #0f9488;
+  --target-dia: #5b7fd6;
+  --font-display: -apple-system, 'Segoe UI', Inter, system-ui, sans-serif;
+  --font-body: -apple-system, 'Segoe UI', Inter, system-ui, sans-serif;
+}
+
+:root[data-theme='dashboard'] {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --card: #161d36;
+  --card-bg: linear-gradient(160deg, #161d36, #11172b);
+  --card-border: #232c4d;
+  --card-shadow: none;
+  --inset: #0b1020;
+  --chip: #161d36;
+  --text: #e8ecf8;
+  --muted: #9aa6c9;
+  --accent: #ff8a7a;
+  --accent-solid: #ff8a7a;
+  --accent-contrast: #1a0e12;
+  --primary-bg: linear-gradient(90deg, #ff5f6d, #ffc371);
+  --primary-fg: #1a0e12;
+  --big-fill: linear-gradient(90deg, #ff8a7a, #ffc371);
+  --sys: #ff8a7a;
+  --dia: #7aa2ff;
+  --pulse: #ffc371;
+  --med: #b38cff;
+  --target-sys: #ff8a7a;
+  --target-dia: #7aa2ff;
+}
+
+:root[data-theme='editorial'] {
+  color-scheme: light;
+  --bg: #f6f1ea;
+  --card: #fffdf9;
+  --card-bg: var(--card);
+  --card-border: #e8dfd3;
+  --card-shadow: none;
+  --inset: #f6f1ea;
+  --chip: transparent;
+  --text: #2b211b;
+  --muted: #6b5b4f;
+  --accent: #c2593c;
+  --accent-solid: #b04e33;
+  --accent-contrast: #ffffff;
+  --primary-bg: #2b211b;
+  --primary-fg: #f6f1ea;
+  --big-fill: var(--text);
+  --sys: #c2593c;
+  --dia: #4a6b8a;
+  --pulse: #8a6a1f;
+  --med: #7a5c99;
+  --target-sys: #c2593c;
+  --target-dia: #4a6b8a;
+  --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+}
