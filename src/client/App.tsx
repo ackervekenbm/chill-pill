@@ -2,6 +2,7 @@
 // Copyright (C) 2026 ackervekenbm
 
 import { useEffect, useState } from 'react'
+import { TodayCard } from './components/TodayCard'
 import { Shell, useIsDesktop, type View } from './components/Shell'
 import { applyTheme } from './theme'
 import { useData } from './useData'
@@ -27,17 +28,18 @@ export function App() {
     )
   }
 
+  const today = <TodayCard readings={data.readings} onAdd={data.addReading} onUndo={data.removeReading} />
   const panel = (name: string) => <section className="card" aria-label={name}><h2 className="card-title">{name}</h2></section>
   let body
   if (view === 'settings') body = panel('Settings')
   else if (desktop) {
     body = (
       <div className="desk-grid">
-        <div className="col">{panel('Today')}{panel('Medication')}</div>
+        <div className="col">{today}{panel('Medication')}</div>
         <div className="col">{panel('Trend')}{panel('History')}</div>
       </div>
     )
-  } else if (view === 'today') body = <>{panel('Today')}{panel('Trend')}</>
+  } else if (view === 'today') body = <>{today}{panel('Trend')}</>
   else body = panel(view === 'history' ? 'History' : 'Medication')
 
   return <Shell view={view} onView={setView}>{body}</Shell>

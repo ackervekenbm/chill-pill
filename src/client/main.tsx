@@ -7,6 +7,7 @@ import { App } from './App'
 import './styles/base.css'
 import './styles/themes.css'
 import './styles/shell.css'
+import './styles/today.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
