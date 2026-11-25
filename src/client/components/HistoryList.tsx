@@ -42,7 +42,7 @@ export function HistoryList({ days, settings, onOpen }: Props) {
         <tbody>
           {newest.map((d) => (
             <tr key={d.day} className={isOnTarget(d, settings) ? 'on-target' : undefined} onClick={() => onOpen(d.day)}>
-              <td><button type="button" className="hist-open" onClick={(e) => { e.stopPropagation(); onOpen(d.day) }}>{formatDay(d.day, thisYear)}{flag(d)}</button></td>
+              <td><button type="button" className="hist-open" data-day={d.day} onClick={(e) => { e.stopPropagation(); onOpen(d.day) }}>{formatDay(d.day, thisYear)}{flag(d)}</button></td>
               <td className="num">{avg(d)}</td>
               <td className="num">{Math.round(d.pulse)}</td>
               <td className="num">{d.count}</td>
@@ -57,7 +57,7 @@ export function HistoryList({ days, settings, onOpen }: Props) {
     <ul className="hist-list">
       {newest.map((d) => (
         <li key={d.day}>
-          <button type="button" className={`hist-row${isOnTarget(d, settings) ? ' on-target' : ''}`} onClick={() => onOpen(d.day)}>
+          <button type="button" data-day={d.day} className={`hist-row${isOnTarget(d, settings) ? ' on-target' : ''}`} onClick={() => onOpen(d.day)}>
             <span className="hist-date">{formatDay(d.day, thisYear)}{flag(d)}</span>
             <span className="hist-avg">{avg(d)}</span>
             <span className="hist-sub">♥ {Math.round(d.pulse)} · {d.count}×</span>

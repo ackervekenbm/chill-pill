@@ -5,8 +5,7 @@ import { useCallback, useMemo, useRef, useState, type FormEvent } from 'react'
 import type { NewReading, Reading } from '../../shared/types'
 import { useNow } from '../useNow'
 import { dayAverages } from '../../shared/stats'
-import { fieldError, newReadingSchema } from '../../shared/validation'
-import { FIELDS, ReadingFields, type Field } from './ReadingFields'
+import { checkReading, ReadingFields, type Field } from './ReadingFields'
 import { UndoToast } from './UndoToast'
 
 interface Props {
@@ -33,11 +32,7 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
   const count = day?.count ?? 0
   const takenAt = picked ?? now
 
-  const complete = FIELDS.every((f) => text[f.key].trim() !== '' && !fieldError(f.key, text[f.key]))
-  const parsed = complete
-    ? newReadingSchema.safeParse({ takenAt, sys: Number(text.sys), dia: Number(text.dia), pulse: Number(text.pulse), note })
-    : null
-  const diaExtra = parsed?.error?.issues.find((i) => i.path[0] === 'dia')?.message ?? null
+  const { parsed, diaExtra } = checkReading(text, takenAt, note)
   const valid = !!parsed?.success
 
   const edit = (f: Field, v: string) => {

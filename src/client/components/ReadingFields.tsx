@@ -3,7 +3,7 @@
 
 import { useRef, useState, type Ref } from 'react'
 import { shouldAdvance } from '../../shared/stats'
-import { fieldError } from '../../shared/validation'
+import { fieldError, newReadingSchema } from '../../shared/validation'
 
 export type Field = 'sys' | 'dia' | 'pulse'
 export const FIELDS: Array<{ key: Field; label: string; hint: 'next' | 'done' }> = [
@@ -75,4 +75,14 @@ export function ReadingFields({ idPrefix, text, onChange, errors, diaExtra, auto
       ))}
     </div>
   )
+}
+
+/** Today's and the editor's shared form check: only a complete, in-range form is parsed; the only cross-field message is sys > dia. */
+export function checkReading(text: Record<Field, string>, takenAt: string, note: string) {
+  const complete = FIELDS.every((f) => text[f.key].trim() !== '' && !fieldError(f.key, text[f.key]))
+  const parsed = complete
+    ? newReadingSchema.safeParse({ takenAt, sys: Number(text.sys), dia: Number(text.dia), pulse: Number(text.pulse), note })
+    : null
+  const diaExtra = parsed?.error?.issues.find((i) => i.path[0] === 'dia')?.message ?? null
+  return { parsed, diaExtra }
 }

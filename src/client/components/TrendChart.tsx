@@ -12,7 +12,11 @@ import { bp } from './SummaryStrip'
 // Colours come from CSS classes in trend.css (var() in SVG attributes is not reliable in every browser).
 const DAY = 86_400_000
 const ts = (day: string) => Date.parse(`${day}T00:00:00Z`)
-const fmt = (o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', ...o })
+// en-GB abbreviates September to 'Sept'; keep every month at three letters.
+const fmt = (o: Intl.DateTimeFormatOptions) => {
+  const f = new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', ...o })
+  return { format: (d: number | Date) => f.format(d).replace('Sept', 'Sep') }
+}
 const dayMonth = fmt({ day: 'numeric', month: 'short' })
 const month = fmt({ month: 'short' })
 const monthYear = fmt({ month: 'short', year: '2-digit' })

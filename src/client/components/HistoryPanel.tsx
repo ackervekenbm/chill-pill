@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 ackervekenbm
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { NewReading, Reading, ReadingPatch, Settings } from '../../shared/types'
 import { dayAverages } from '../../shared/stats'
 import { DayDetail } from './DayDetail'
@@ -22,7 +22,14 @@ export function HistoryPanel({ readings, settings, onAdd, onUpdate, onRemove }: 
   const [open, setOpen] = useState<string | null>(null)
   const [deleted, setDeleted] = useState<{ r: Reading; n: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const root = useRef<HTMLElement>(null)
+  const returnTo = useRef<string | null>(null)
+  const [failed, setFailed] = useState<Reading | null>(null)
   const day = open ? days.find((d) => d.day === open) : undefined // an emptied day falls back to the list
+  if (open && !day) {
+    returnTo.current ??= '' // no row to return to; the effect below focuses the heading
+    setOpen(null)
+  }
 
   const remove = async (r: Reading) => {
     setError(null)
@@ -33,23 +40,46 @@ export function HistoryPanel({ readings, settings, onAdd, onUpdate, onRemove }: 
       setError(`Couldn't delete: ${(e as Error).message}`)
     }
   }
-  const undo = async () => {
-    if (!deleted) return
-    const { takenAt, sys, dia, pulse, note } = deleted.r
-    setDeleted(null)
+  // Back (or an emptied day) lands on the list: return focus to that day's row, else the card heading.
+  useEffect(() => {
+    if (day) return
+    const sel = returnTo.current && `[data-day="${returnTo.current}"]`
+    const el = (sel && root.current?.querySelector<HTMLElement>(sel)) || null
+    if (el) el.focus()
+    else if (returnTo.current !== null) root.current?.querySelector<HTMLElement>('h2')?.focus()
+    returnTo.current = null
+  }, [day])
+
+  const restore = async (r: Reading) => {
+    const { takenAt, sys, dia, pulse, note } = r
+    setFailed(null)
+    setError(null)
     try {
       await onAdd({ takenAt, sys, dia, pulse, note })
-    } catch (e) {
-      setError(`Couldn't restore: ${(e as Error).message}`)
+    } catch {
+      setFailed(r) // keep the values so Retry can try again
     }
+  }
+  const undo = async () => {
+    if (!deleted) return
+    const r = deleted.r
+    setDeleted(null)
+    await restore(r)
   }
 
   return (
-    <section className="card history" aria-label="History">
-      <h2 className="card-title">History</h2>
+    <section className="card history" aria-label="History" ref={root}>
+      <h2 className="card-title" tabIndex={-1}>History</h2>
       {error && <div className="banner-err" role="alert">{error}</div>}
+      {failed && (
+        <div className="banner-err" role="alert">
+          Couldn't restore the reading.{' '}
+          <button type="button" className="link-btn" onClick={() => void restore(failed)}>Retry</button>
+          <button type="button" className="link-btn" onClick={() => setFailed(null)}>Dismiss</button>
+        </div>
+      )}
       {day ? (
-        <DayDetail day={day} onEdit={onUpdate} onDelete={(r) => void remove(r)} onClose={() => setOpen(null)} />
+        <DayDetail day={day} onEdit={onUpdate} onDelete={(r) => void remove(r)} onClose={() => { returnTo.current = open; setOpen(null) }} />
       ) : (
         <HistoryList days={days} settings={settings} onOpen={setOpen} />
       )}

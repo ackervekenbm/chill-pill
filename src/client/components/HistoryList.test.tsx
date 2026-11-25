@@ -68,3 +68,9 @@ it('renders a table with headers on desktop', () => {
   expect(screen.getAllByRole('row')).toHaveLength(4)
   expect(screen.getByText('after a walk')).toBeInTheDocument()
 })
+
+it('abbreviates September to three letters', () => {
+  setup([reading({ id: 5, takenAt: '2026-09-23T08:00' })])
+  expect(screen.getByRole('button')).toHaveTextContent('Wed 23 Sep')
+  expect(screen.getByRole('button')).not.toHaveTextContent('Sept')
+})
