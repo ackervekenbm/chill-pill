@@ -21,6 +21,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "import": "tsx scripts/import-xlsx.ts",
+    "seed": "tsx scripts/seed-demo.ts",
     "start": "node dist-server/server/index.js"
   },
   "dependencies": {

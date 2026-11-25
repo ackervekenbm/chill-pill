@@ -1,0 +1,107 @@
+/* Trend card. Chart colours are set here (not as SVG attributes) so themes apply everywhere. */
+.trend { --sys-area: 0; }
+:root[data-theme='dashboard'] .trend { --sys-area: 0.32; }
+
+.trend-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.trend-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.trend-controls .seg:first-child { flex: 5 1 260px; }
+.trend-controls .seg:last-child { flex: 3 1 220px; }
+
+/* Segmented control: native radios inside pill labels; the 36px segment + 4px padding keeps a 44px target. */
+.seg { display: flex; gap: 2px; padding: 4px; border-radius: 999px; background: var(--chip); }
+:root[data-theme='editorial'] .seg { border: 1px solid #d9cdbd; }
+:root[data-theme='dashboard'] .seg { background: var(--inset); border: 1px solid var(--card-border); }
+.seg label {
+  position: relative; flex: 1; min-height: 36px; padding: 0 10px;
+  display: grid; place-items: center; border-radius: 999px;
+  color: var(--muted); font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+.seg input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.seg label:has(input:checked) { background: var(--accent-solid); color: var(--accent-contrast); }
+:root[data-theme='dashboard'] .seg label:has(input:checked) { background: var(--text); color: var(--bg); }
+.seg label:has(input:focus-visible) { outline: 3px solid var(--accent-solid); outline-offset: 2px; }
+
+.switch { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--muted); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch-track { position: relative; width: 34px; height: 20px; border-radius: 999px; background: var(--chip); border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent); transition: background-color 0.15s; }
+.switch-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); transition: transform 0.15s, background-color 0.15s; }
+.switch input:checked + .switch-track { background: var(--pulse); border-color: var(--pulse); }
+.switch input:checked + .switch-track::after { transform: translateX(14px); background: var(--card); }
+.switch input:focus-visible + .switch-track { outline: 3px solid var(--accent-solid); outline-offset: 2px; }
+
+.summary { margin: 12px 2px 4px; color: var(--muted); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.trend-empty { display: grid; place-items: center; height: 220px; margin: 8px 0 0; border-radius: 14px; background: var(--inset); color: var(--muted); }
+
+.trend-chart { height: 240px; margin: 4px -4px 0 -8px; }
+@media (min-width: 900px) { .trend-chart { height: 300px; } }
+.trend-chart svg { overflow: visible; }
+.trend-chart .recharts-surface:focus { outline: none; }
+.trend-grid { stroke: color-mix(in srgb, var(--muted) 16%, transparent); }
+.trend-chart { color: var(--muted); font-variant-numeric: tabular-nums; }
+.trend-cursor { stroke: color-mix(in srgb, var(--muted) 45%, transparent); stroke-width: 1; }
+
+.line-sys .recharts-line-curve { stroke: var(--sys); stroke-linejoin: round; }
+.line-dia .recharts-line-curve { stroke: var(--dia); stroke-linejoin: round; }
+.line-pulse .recharts-line-curve { stroke: var(--pulse); stroke-linejoin: round; stroke-dasharray: 1 0; }
+.dot-sys { fill: var(--sys); }
+.dot-dia { fill: var(--dia); }
+.dot-pulse { fill: var(--pulse); }
+.adot-sys { fill: var(--sys); stroke: var(--card); }
+.adot-dia { fill: var(--dia); stroke: var(--card); }
+.adot-pulse { fill: var(--pulse); stroke: var(--card); }
+.area-stop-top { stop-color: var(--sys); stop-opacity: var(--sys-area); }
+.area-stop-bottom { stop-color: var(--sys); stop-opacity: 0; }
+.area-sys .recharts-area-area { fill-opacity: 1; }
+
+.ref-sys line { stroke: var(--target-sys); opacity: 0.55; }
+.ref-dia line { stroke: var(--target-dia); opacity: 0.55; }
+.ref-med line { stroke: var(--med); stroke-width: 1.5; }
+.med-marker { cursor: pointer; }
+.med-marker circle { fill: var(--med); stroke: var(--card); stroke-width: 2; }
+.med-marker text {
+  fill: var(--med); font-size: 11px; font-weight: 600;
+  paint-order: stroke; stroke: var(--card); stroke-width: 4px; stroke-linejoin: round;
+}
+
+.trend-tip {
+  min-width: 150px; padding: 10px 12px; border-radius: 12px;
+  background: var(--card); border: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14); font-size: 0.82rem; font-variant-numeric: tabular-nums;
+}
+.trend-tip b { display: block; color: var(--muted); font-weight: 600; font-size: 0.75rem; }
+.trend-tip-avg { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.trend-tip-avg span { font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; color: var(--muted); }
+.trend-tip ul { margin: 6px 0 0; padding: 6px 0 0; list-style: none; border-top: 1px solid color-mix(in srgb, var(--muted) 18%, transparent); }
+.trend-tip li span { display: inline-block; width: 3em; color: var(--muted); }
+
+.trend-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 2px 0; padding: 0; list-style: none; color: var(--muted); font-size: 0.78rem; }
+.trend-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.trend-legend li::before { content: ''; width: 14px; height: 3px; border-radius: 2px; background: currentColor; }
+.lg-sys::before { background: var(--sys) !important; }
+.lg-dia::before { background: var(--dia) !important; }
+.lg-pulse::before { background: var(--pulse) !important; }
+.lg-target::before { background: repeating-linear-gradient(90deg, var(--muted) 0 4px, transparent 4px 7px) !important; height: 2px !important; opacity: 0.7; }
+
+.med-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+.med-chip {
+  min-height: 36px; max-width: 100%; padding: 6px 12px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--med) 35%, transparent);
+  background: color-mix(in srgb, var(--med) 9%, transparent); color: var(--text);
+  font-size: 0.82rem; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.med-chip[aria-expanded='true'] { background: var(--med); border-color: var(--med); color: #fff; }
+
+.ba { margin-top: 12px; padding: 14px; border-radius: 16px; background: var(--inset); border: 1px solid color-mix(in srgb, var(--med) 30%, transparent); }
+.ba-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.ba-head .label { color: var(--med); font-weight: 700; }
+.ba-title { margin-top: 2px; font-family: var(--font-display); font-size: 1rem; font-weight: 600; }
+.ba-close { width: 44px; height: 44px; margin: -10px -10px 0 0; border: 0; border-radius: 999px; background: none; color: var(--muted); font-size: 1.5rem; line-height: 1; }
+.ba-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.ba-side { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ba-side .label { font-size: 0.68rem; }
+.ba-num { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+:root[data-theme='editorial'] .ba-num { font-weight: 500; }
+.ba-none { font-family: var(--font-body); font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+.ba-sub { color: var(--muted); font-size: 0.78rem; }
+.ba-hint { margin: 2px 0 0; color: var(--muted); font-size: 0.78rem; }

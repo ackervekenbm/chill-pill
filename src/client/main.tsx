@@ -8,6 +8,7 @@ import './styles/base.css'
 import './styles/themes.css'
 import './styles/shell.css'
 import './styles/today.css'
+import './styles/trend.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

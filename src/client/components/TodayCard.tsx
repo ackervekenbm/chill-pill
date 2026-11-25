@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 ackervekenbm
 
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useMemo, useRef, useState, type FormEvent } from 'react'
 import type { NewReading, Reading } from '../../shared/types'
-import { nowLocal } from '../../shared/dates'
+import { useNow } from '../useNow'
 import { dayAverages, shouldAdvance } from '../../shared/stats'
 import { fieldError, newReadingSchema } from '../../shared/validation'
 import { UndoToast } from './UndoToast'
@@ -22,7 +22,7 @@ const FIELDS: Array<{ key: Field; label: string; hint: 'next' | 'done' }> = [
 ]
 
 export function TodayCard({ readings, onAdd, onUndo }: Props) {
-  const [now, setNow] = useState(() => nowLocal())
+  const now = useNow()
   const [text, setText] = useState<Record<Field, string>>({ sys: '', dia: '', pulse: '' })
   const [note, setNote] = useState('')
   const [noteOpen, setNoteOpen] = useState(false)
@@ -34,20 +34,6 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
   const [saved, setSaved] = useState<{ id: number; n: number } | null>(null)
   const refs = useRef<Record<Field, HTMLInputElement | null>>({ sys: null, dia: null, pulse: null })
   const inFlight = useRef(false)
-
-  // The PWA can stay open overnight: keep "now" (and so "today") fresh.
-  useEffect(() => {
-    const tick = () => setNow(nowLocal())
-    const id = setInterval(tick, 30_000)
-    const onVis = () => document.visibilityState === 'visible' && tick()
-    window.addEventListener('focus', tick)
-    document.addEventListener('visibilitychange', onVis)
-    return () => {
-      clearInterval(id)
-      window.removeEventListener('focus', tick)
-      document.removeEventListener('visibilitychange', onVis)
-    }
-  }, [])
 
   const today = now.slice(0, 10)
   const day = useMemo(() => dayAverages(readings.filter((r) => r.takenAt.startsWith(today)))[0], [readings, today])

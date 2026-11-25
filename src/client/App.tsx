@@ -3,15 +3,18 @@
 
 import { useEffect, useState } from 'react'
 import { TodayCard } from './components/TodayCard'
+import { TrendCard } from './components/TrendCard'
 import { Shell, useIsDesktop, type View } from './components/Shell'
 import { applyTheme } from './theme'
 import { useData } from './useData'
+import { useNow } from './useNow'
 
 export function App() {
   const data = useData()
   const desktop = useIsDesktop()
   const [view, setView] = useState<View>('today')
   const theme = data.settings.theme
+  const todayDate = useNow().slice(0, 10)
 
   useEffect(() => applyTheme(theme), [theme])
 
@@ -29,6 +32,7 @@ export function App() {
   }
 
   const today = <TodayCard readings={data.readings} onAdd={data.addReading} onUndo={data.removeReading} />
+  const trend = <TrendCard readings={data.readings} medications={data.medications} settings={data.settings} today={todayDate} />
   const panel = (name: string) => <section className="card" aria-label={name}><h2 className="card-title">{name}</h2></section>
   let body
   if (view === 'settings') body = panel('Settings')
@@ -36,10 +40,10 @@ export function App() {
     body = (
       <div className="desk-grid">
         <div className="col">{today}{panel('Medication')}</div>
-        <div className="col">{panel('Trend')}{panel('History')}</div>
+        <div className="col">{trend}{panel('History')}</div>
       </div>
     )
-  } else if (view === 'today') body = <>{today}{panel('Trend')}</>
+  } else if (view === 'today') body = <>{today}{trend}</>
   else body = panel(view === 'history' ? 'History' : 'Medication')
 
   return <Shell view={view} onView={setView}>{body}</Shell>
