@@ -7,7 +7,6 @@ import { fileURLToPath } from 'node:url'
 
 const pub = (name) => fileURLToPath(new URL(`../public/${name}`, import.meta.url))
 
-const TEAL = '#0f9488'
 const DEEP = '#075a53'
 const PAPER = '#ffffff'
 const BEAT = '#ff6b6b'
