@@ -40,9 +40,9 @@ Raspberry Pi or any other box at home, and your readings never leave it.
 
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/calm-phone.png" width="250" alt="Clinical calm theme on a phone: the entry card and the six-month trend chart"><br><sub>Clinical calm</sub></td>
-    <td align="center"><img src="docs/screenshots/dashboard-phone.png" width="250" alt="Dark dashboard theme on a phone: the entry card and the six-month trend chart"><br><sub>Dark dashboard</sub></td>
-    <td align="center"><img src="docs/screenshots/editorial-phone.png" width="250" alt="Warm editorial theme on a phone: the entry card and the six-month trend chart"><br><sub>Warm editorial</sub></td>
+    <td align="center"><img src="docs/screenshots/calm-phone.png" width="250" alt="Clinical calm theme on a phone: today's entry card and the top of the six-month trend chart"><br><sub>Clinical calm</sub></td>
+    <td align="center"><img src="docs/screenshots/dashboard-phone.png" width="250" alt="Dark dashboard theme on a phone: today's entry card and the top of the six-month trend chart"><br><sub>Dark dashboard</sub></td>
+    <td align="center"><img src="docs/screenshots/editorial-phone.png" width="250" alt="Warm editorial theme on a phone: today's entry card and the top of the six-month trend chart"><br><sub>Warm editorial</sub></td>
   </tr>
 </table>
 
@@ -111,7 +111,7 @@ You need Node 22 or newer.
 ```bash
 npm install
 npm run dev                 # API on :3094, app on :5184 (open this one)
-npm run seed -- --to http://localhost:3094   # fill an empty dev instance with made-up readings
+npm run seed -- --to http://localhost:3094   # fill an empty dev instance (it refuses one that already has readings) with made-up readings
 ```
 
 ```bash

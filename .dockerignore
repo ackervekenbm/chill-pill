@@ -11,3 +11,6 @@ docs
 .env.*
 *.log
 .dockerignore
+*.xlsx
+*.csv
+*.db*

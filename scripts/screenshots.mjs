@@ -59,16 +59,8 @@ for (const theme of THEMES) {
     page.on('pageerror', (error) => console.error('page error:', error.message))
     await page.goto(APP, { waitUntil: 'networkidle' })
     await page.waitForSelector('.recharts-surface')
-    if (kind === 'phone') {
-      // Scroll the whole trend card into view just above the bottom tab bar.
-      await page.evaluate(() => {
-        const card = document.querySelector('.card.trend').getBoundingClientRect()
-        const tabs = document.querySelector('nav.tabs').getBoundingClientRect()
-        window.scrollBy(0, card.bottom - tabs.top + 12)
-      })
-    }
     await page.waitForTimeout(600)
-    // Viewport only: the phone page scrolls on below the chart.
+    // Viewport only, top of the page: the phone page scrolls on below the fold.
     await page.screenshot({ path: path.join(OUT, `${theme}-${kind}.png`) })
     console.log('wrote', `${theme}-${kind}.png`)
     await page.close()

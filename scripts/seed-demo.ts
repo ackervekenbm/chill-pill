@@ -60,6 +60,11 @@ async function post(path: string, body: unknown) {
 }
 
 async function main() {
+  const existing = (await (await fetch(new URL('/api/readings', base))).json()) as unknown[]
+  if (existing.length > 0) {
+    console.error(`Refusing to seed: ${base} already has readings. Seed only an empty instance.`)
+    process.exit(1)
+  }
   console.log('import', await post('/api/import', readings))
   for (const m of meds) await post('/api/medications', m)
   console.log(`added ${meds.length} medication changes`)
