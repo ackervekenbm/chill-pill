@@ -15,13 +15,17 @@ export class ApiError extends Error {
 }
 
 async function req<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
+  const res = await fetch(url, init).catch(() => {
+    throw new ApiError(0, "Can't reach Chill Pill. Check your connection.")
+  })
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: string; field?: string } | null
     throw new ApiError(res.status, body?.error ?? `request failed (${res.status})`, body?.field)
   }
   if (res.status === 204) return undefined as T
-  return (await res.json()) as T
+  return (await res.json().catch(() => {
+    throw new ApiError(res.status, 'Unexpected response from the server.')
+  })) as T
 }
 
 const json = (method: string, body: unknown): RequestInit => ({

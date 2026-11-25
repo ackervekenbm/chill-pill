@@ -41,39 +41,39 @@ export function useData() {
     void reload()
   }, [reload])
 
-  const addReading = async (r: NewReading) => {
+  const addReading = useCallback(async (r: NewReading) => {
     const created = await api.addReading(r)
     setReadings((all) => [...all, created].sort(byTime))
     return created
-  }
-  const updateReading = async (id: number, p: ReadingPatch) => {
+  }, [])
+  const updateReading = useCallback(async (id: number, p: ReadingPatch) => {
     const updated = await api.patchReading(id, p)
     setReadings((all) => all.map((x) => (x.id === id ? updated : x)).sort(byTime))
     return updated
-  }
-  const removeReading = async (id: number) => {
+  }, [])
+  const removeReading = useCallback(async (id: number) => {
     await api.deleteReading(id)
     setReadings((all) => all.filter((x) => x.id !== id))
-  }
-  const addMedication = async (m: NewMedication) => {
+  }, [])
+  const addMedication = useCallback(async (m: NewMedication) => {
     const created = await api.addMedication(m)
     setMedications((all) => [...all, created].sort(byDate))
     return created
-  }
-  const updateMedication = async (id: number, p: Partial<NewMedication>) => {
+  }, [])
+  const updateMedication = useCallback(async (id: number, p: Partial<NewMedication>) => {
     const updated = await api.patchMedication(id, p)
     setMedications((all) => all.map((x) => (x.id === id ? updated : x)).sort(byDate))
     return updated
-  }
-  const removeMedication = async (id: number) => {
+  }, [])
+  const removeMedication = useCallback(async (id: number) => {
     await api.deleteMedication(id)
     setMedications((all) => all.filter((x) => x.id !== id))
-  }
-  const saveSettings = async (s: Settings) => {
+  }, [])
+  const saveSettings = useCallback(async (s: Settings) => {
     const saved = await api.putSettings(s)
     setSettings(saved)
     return saved
-  }
+  }, [])
 
   return {
     readings, medications, settings, loading, error,
