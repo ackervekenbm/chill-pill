@@ -14,9 +14,12 @@ const toDay = (v: unknown): string | null => {
 export function parseSheet(rows: unknown[][]): { readings: NewReading[]; problems: string[] } {
   const readings: NewReading[] = []
   const problems: string[] = []
-  for (const row of rows.slice(1)) {
+  for (const [n, row] of rows.slice(1).entries()) {
     const takenAt = toDay(row[0])
-    if (!takenAt) continue
+    if (!takenAt) {
+      if (row.slice(1, 10).some((v) => !isEmpty(v))) problems.push(`row ${n + 2}: values but no valid date (got "${String(row[0] ?? '')}")`)
+      continue
+    }
     for (let i = 0; i < 3; i++) {
       const triple = row.slice(1 + i * 3, 4 + i * 3)
       while (triple.length < 3) triple.push(null)

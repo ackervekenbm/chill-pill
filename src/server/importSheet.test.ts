@@ -41,4 +41,9 @@ describe('parseSheet', () => {
     expect(readings).toHaveLength(2)
     expect(problems).toEqual(['2026-03-05 reading 1: not a whole number'])
   })
+  it('reports values without a valid date', () => {
+    const { readings, problems } = parseSheet([header, full('3 maart'), full(null)])
+    expect(readings).toEqual([])
+    expect(problems).toEqual(['row 2: values but no valid date (got "3 maart")', 'row 3: values but no valid date (got "")'])
+  })
 })
