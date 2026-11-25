@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- The README banner (docs/banner.png). Rendered by scripts/banner.mjs at
+     860x300 CSS px, 2x. Clinical calm colours; the chart's numbers are made up. -->
+<html lang="en">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=block" />
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 860px; height: 300px; font-family: Inter, system-ui, sans-serif; color: #14202b; }
+  .banner {
+    position: relative; width: 860px; height: 300px; border-radius: 24px; overflow: hidden;
+    background: radial-gradient(circle at 88% 8%, #d4efeb 0, transparent 46%), linear-gradient(135deg, #f7faf9, #eaf1f3);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 48px 0 56px;
+  }
+  .brand { display: flex; flex-direction: column; gap: 20px; }
+  .name { display: flex; align-items: center; gap: 18px; }
+  .name svg { width: 76px; height: 76px; filter: drop-shadow(0 8px 14px rgba(11, 111, 102, .28)); }
+  .name h1 { font-size: 56px; font-weight: 800; letter-spacing: -2px; }
+  .tag { font-size: 21px; line-height: 1.4; color: #5d6b78; max-width: 400px; }
+  .tag b { color: #14202b; font-weight: 600; }
+
+  .card {
+    width: 330px; background: #fff; border-radius: 18px; padding: 18px 20px 12px;
+    box-shadow: 0 1px 3px rgba(20, 32, 43, .08), 0 14px 34px rgba(20, 32, 43, .10);
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #5d6b78; font-weight: 600; }
+  .big { display: flex; align-items: baseline; gap: 8px; margin: 4px 0 2px; }
+  .big strong { font-size: 34px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+  .big span { font-size: 13px; color: #5d6b78; }
+  .pill { display: inline-block; white-space: nowrap; margin-left: auto; font-size: 12px; font-weight: 600; color: #0d7d73; background: #e3f4f1; border-radius: 99px; padding: 3px 9px; }
+  svg.chart { display: block; margin-top: 8px; }
+  .legend { display: flex; gap: 14px; font-size: 11px; color: #5d6b78; margin-top: 4px; }
+  .legend i { display: inline-block; width: 10px; height: 3px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+</style>
+<div class="banner">
+  <div class="brand">
+    <div class="name">
+      <svg viewBox="0 0 512 512" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14b2a2" /><stop offset="1" stop-color="#0b6f66" /></linearGradient><filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#04302c" flood-opacity=".35" /></filter></defs>
+        <rect width="512" height="512" rx="112" fill="url(#g)" />
+        <g transform="translate(256 256) scale(1.2) translate(-256 -256)">
+          <g transform="rotate(-35 256 256)" filter="url(#sh)">
+            <path d="M256 186H162a70 70 0 0 0 0 140H256Z" fill="#075a53" />
+            <path d="M256 186H350a70 70 0 0 1 0 140H256Z" fill="#ffffff" />
+            <path d="M132 256H206L232 206L272 306L300 236L316 256H380" fill="none" stroke="#ff6b6b" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </g>
+      </svg>
+      <h1>Chill Pill</h1>
+    </div>
+    <p class="tag"><b>Log your blood pressure in seconds</b><br />and see where it's heading.</p>
+  </div>
+  <div class="card">
+    <div class="eyebrow">Last 6 months · daily average</div>
+    <div class="big"><strong>131/83</strong><span>mmHg</span><span class="pill">↓ 14/8</span></div>
+    <svg class="chart" viewBox="0 0 290 112" width="290" height="112" aria-hidden="true">
+      <!-- target lines -->
+      <line x1="0" x2="290" y1="40" y2="40" stroke="#0f9488" stroke-opacity=".55" stroke-dasharray="4 4" />
+      <line x1="0" x2="290" y1="84" y2="84" stroke="#5b7fd6" stroke-opacity=".55" stroke-dasharray="4 4" />
+      <!-- medication marker -->
+      <line x1="118" x2="118" y1="4" y2="112" stroke="#8b5cf6" stroke-width="2" />
+      <circle cx="118" cy="6" r="4" fill="#8b5cf6" />
+      <!-- systolic: area + line -->
+      <path d="M0 18 L22 12 L44 20 L66 10 L88 16 L110 14 L132 26 L154 30 L176 28 L198 38 L220 34 L242 44 L264 40 L284 46 V112 H0 Z" fill="#0f9488" fill-opacity=".08" />
+      <path d="M0 18 L22 12 L44 20 L66 10 L88 16 L110 14 L132 26 L154 30 L176 28 L198 38 L220 34 L242 44 L264 40 L284 46" fill="none" stroke="#0f9488" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+      <!-- diastolic -->
+      <path d="M0 64 L22 60 L44 66 L66 58 L88 62 L110 61 L132 70 L154 72 L176 71 L198 78 L220 76 L242 84 L264 82 L284 87" fill="none" stroke="#5b7fd6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+      <circle cx="284" cy="46" r="4.5" fill="#fff" stroke="#0f9488" stroke-width="3" />
+      <circle cx="284" cy="87" r="4.5" fill="#fff" stroke="#5b7fd6" stroke-width="3" />
+    </svg>
+    <div class="legend"><span><i style="background:#0f9488"></i>Systolic</span><span><i style="background:#5b7fd6"></i>Diastolic</span><span><i style="background:#8b5cf6"></i>Medication</span></div>
+  </div>
+</div>
+</html>
