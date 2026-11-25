@@ -20,6 +20,7 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest",
+    "icons": "node scripts/gen-icons.mjs",
     "import": "tsx scripts/import-xlsx.ts",
     "seed": "tsx scripts/seed-demo.ts",
     "start": "node dist-server/server/index.js"

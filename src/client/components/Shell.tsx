@@ -2,7 +2,7 @@
 // Copyright (C) 2026 ackervekenbm
 
 import { useEffect, useState, type ReactNode } from 'react'
-import { HistoryIcon, MedicationIcon, SettingsIcon, TodayIcon } from './icons'
+import { HistoryIcon, Logo, MedicationIcon, SettingsIcon, TodayIcon } from './icons'
 
 export type View = 'today' | 'history' | 'medication' | 'settings'
 
@@ -48,7 +48,7 @@ export function Shell({ view, onView, children }: Props) {
     <div className="shell">
       <header className="topbar">
         <span className="brand">
-          <span className="brand-mark" aria-hidden="true"><TodayIcon /></span>
+          <span className="brand-mark" aria-hidden="true"><Logo /></span>
           Chill Pill
         </span>
       </header>

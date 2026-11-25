@@ -42,3 +42,15 @@ export const NoteIcon = () => (
     <path d="M15 20v-4h4M8 9h8M8 13h4" />
   </svg>
 )
+
+// Brand mark: keep in sync with scripts/gen-icons.mjs.
+export const Logo = () => (
+  <svg viewBox="72 72 368 368" width="32" height="32" aria-hidden="true" focusable="false">
+    <g transform="rotate(-35 256 256)">
+      <path d="M256 186H162a70 70 0 0 0 0 140H256Z" fill="#0f9488" />
+      <path d="M256 186H350a70 70 0 0 1 0 140H256Z" fill="#ffffff" />
+      <rect x="92" y="186" width="328" height="140" rx="70" fill="none" stroke="#0f9488" strokeWidth="16" />
+      <path d="M132 256H206L232 206L272 306L300 236L316 256H380" fill="none" stroke="#e8505b" strokeWidth="22" strokeLinecap="round" strokeLinejoin="round" />
+    </g>
+  </svg>
+)

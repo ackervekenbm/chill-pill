@@ -34,6 +34,20 @@ describe('createApp', () => {
     expect(page.headers['cache-control']).toBe('no-cache')
   })
 
+  it('serves the manifest as application/manifest+json and icons cacheable', async () => {
+    const dist = tempDir()
+    fs.mkdirSync(path.join(dist, 'icons'))
+    fs.writeFileSync(path.join(dist, 'index.html'), '<html>shell</html>')
+    fs.writeFileSync(path.join(dist, 'manifest.webmanifest'), '{}')
+    fs.writeFileSync(path.join(dist, 'icons', 'icon-192.png'), 'x')
+    const app = createApp({ db: tempDb().db, clientDist: dist })
+    const manifest = await request(app).get('/manifest.webmanifest')
+    expect(manifest.headers['content-type']).toContain('application/manifest+json')
+    expect(manifest.headers['cache-control']).toBe('no-cache')
+    const icon = await request(app).get('/icons/icon-192.png')
+    expect(icon.headers['cache-control']).toBe('public, max-age=86400')
+  })
+
   it('rejects malformed JSON with a 400', async () => {
     const res = await request(createApp({ db: tempDb().db }))
       .post('/api/health')

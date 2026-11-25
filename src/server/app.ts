@@ -153,11 +153,15 @@ function serveClient(app: express.Express, distDir: string | undefined): void {
   app.use(
     express.static(distDir, {
       setHeaders(res, filePath) {
+        if (filePath.endsWith('.webmanifest')) res.setHeader('Content-Type', 'application/manifest+json')
+        const inDir = (dir: string) => filePath.includes(`${path.sep}${dir}${path.sep}`)
         res.setHeader(
           'Cache-Control',
-          filePath.includes(`${path.sep}assets${path.sep}`)
+          inDir('assets')
             ? 'public, max-age=31536000, immutable'
-            : 'no-cache',
+            : inDir('icons') || /\.(svg|png)$/.test(filePath)
+              ? 'public, max-age=86400'
+              : 'no-cache',
         )
       },
     }),
