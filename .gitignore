@@ -9,3 +9,6 @@ data/
 .env
 .superpowers/
 coverage/
+
+# Private planning docs (spec, plan, mockups) stay local
+docs/superpowers/
