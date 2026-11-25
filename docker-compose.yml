@@ -1,0 +1,19 @@
+# Runs the published image on any Docker host: `docker compose up -d`, then
+# open http://<host>:8184. No settings are required; the optional ones and the
+# OpenMediaVault route are in docs/deployment.md.
+services:
+  chill-pill:
+    image: ghcr.io/ackervekenbm/chill-pill:latest
+    ports:
+      - "8184:3000"
+    volumes:
+      - chill-pill-data:/app/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
+
+volumes:
+  chill-pill-data:

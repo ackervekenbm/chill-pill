@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-server
+data
+coverage
+docs
+.git
+.github
+.superpowers
+.env
+.env.*
+*.log
+.dockerignore
