@@ -1,0 +1,61 @@
+/* Doctor report: always the light "paper" palette, on screen and in print, whatever the app theme. */
+.report {
+  --bg: #fff; --card: #fff; --inset: #f3f4f6; --chip: #eef1f4;
+  --text: #111827; --muted: #4b5563; --rule: #d1d5db;
+  --accent: #0f766e; --accent-solid: #0d7d73; --accent-contrast: #fff;
+  --primary-bg: #0d7d73; --primary-fg: #fff;
+  --sys: #0f766e; --dia: #3b5fc0; --pulse: #b45309; --med: #7c3aed;
+  --target-sys: #0f766e; --target-dia: #3b5fc0;
+  color-scheme: light;
+  max-width: 800px; margin: 0 auto; padding: 16px; background: #fff; color: var(--text);
+  font: 14px/1.4 -apple-system, 'Segoe UI', Inter, system-ui, sans-serif;
+}
+body:has(.report) { background: #e5e7eb; }
+@media (min-width: 840px) { .report { margin: 16px auto; padding: 32px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15); } }
+.report .area-sys { display: none; }
+
+.rp-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.rp-back { flex-basis: 100%; color: var(--accent-solid); font-weight: 600; }
+.rp-date { display: grid; gap: 2px; color: var(--muted); font-size: 0.8rem; font-weight: 600; }
+.rp-date input { min-height: 40px; padding: 0 8px; border: 1px solid var(--rule); border-radius: 8px; font: inherit; color: var(--text); background: #fff; }
+.rp-controls .btn-primary { margin-left: auto; }
+.rp-error { flex-basis: 100%; margin: 0; color: #b3261e; font-weight: 600; }
+
+.rp-head h1 { margin: 0; font-size: 1.5rem; font-weight: 700; }
+.rp-period { margin: 4px 0 0; font-size: 1.1rem; font-weight: 600; }
+.rp-meta, .rp-sub { margin: 2px 0 0; color: var(--muted); font-size: 0.85rem; font-weight: 400; }
+.rp-empty { margin: 32px 0; text-align: center; color: var(--muted); }
+
+.rp-section { margin-top: 18px; break-inside: avoid; }
+.rp-section h2 { font-weight: 700; margin: 0 0 6px; padding-bottom: 3px; border-bottom: 1px solid var(--rule); font-size: 1rem; }
+.rp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.rp-stat { display: grid; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 6px; }
+.rp-stat b { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.rp-stat .label { color: var(--muted); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.rp-line { margin: 8px 0 0; }
+
+.report .trend-chart { height: 220px; }
+.rp-meds { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.rp-meds li { break-inside: avoid; }
+.rp-ba { display: flex; flex-wrap: wrap; gap: 4px 20px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rp-ba b { color: var(--text); }
+
+.rp-days table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.rp-days thead { display: table-header-group; }
+.rp-days th { padding: 4px 8px; text-align: left; background: var(--inset); border-bottom: 1px solid var(--rule); font-size: 0.78rem; }
+.rp-days td { padding: 4px 8px; vertical-align: top; border-bottom: 1px solid #e5e7eb; }
+.rp-days tr { break-inside: avoid; }
+.rp-date-cell { white-space: nowrap; }
+.rp-avg { font-weight: 700; white-space: nowrap; }
+.rp-note { display: block; color: var(--muted); font-size: 0.85rem; }
+/* The table may span pages; only the heading must stay with it. */
+.rp-days { break-inside: auto; }
+.rp-days h2 { break-after: avoid; }
+
+@page { size: A4 portrait; margin: 14mm; }
+@media print {
+  body, body:has(.report) { background: #fff; }
+  .rp-controls { display: none; }
+  .report { max-width: none; margin: 0; padding: 0; box-shadow: none; font-size: 11pt; }
+  .report .trend-chart { height: 200px; }
+}

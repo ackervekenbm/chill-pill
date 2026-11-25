@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { TodayCard } from './components/TodayCard'
 import { HistoryPanel } from './components/HistoryPanel'
 import { MedicationList } from './components/MedicationList'
+import { ReportPage } from './components/ReportPage'
 import { SettingsScreen } from './components/SettingsScreen'
 import { TrendCard } from './components/TrendCard'
 import { Shell, useIsDesktop, type View } from './components/Shell'
@@ -32,6 +33,10 @@ export function App() {
         <button type="button" className="btn-primary" onClick={() => void data.reload()}>Try again</button>
       </div>
     )
+  }
+
+  if (location.pathname === '/report') {
+    return <ReportPage readings={data.readings} medications={data.medications} settings={data.settings} />
   }
 
   const today = <TodayCard readings={data.readings} onAdd={data.addReading} onUndo={data.removeReading} />

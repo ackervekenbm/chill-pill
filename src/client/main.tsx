@@ -11,6 +11,7 @@ import './styles/today.css'
 import './styles/trend.css'
 import './styles/history.css'
 import './styles/settings.css'
+import './styles/report.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

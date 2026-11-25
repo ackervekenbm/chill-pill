@@ -50,7 +50,7 @@
 .adot-sys { fill: var(--sys); stroke: var(--card); }
 .adot-dia { fill: var(--dia); stroke: var(--card); }
 .adot-pulse { fill: var(--pulse); stroke: var(--card); }
-.area-stop-top { stop-color: var(--sys); stop-opacity: var(--sys-area); }
+.area-stop-top { stop-color: var(--sys); stop-opacity: var(--sys-area, 0); }
 .area-stop-bottom { stop-color: var(--sys); stop-opacity: 0; }
 .area-sys .recharts-area-area { fill-opacity: 1; }
 

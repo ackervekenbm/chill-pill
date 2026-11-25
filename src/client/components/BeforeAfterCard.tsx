@@ -2,7 +2,7 @@
 // Copyright (C) 2026 ackervekenbm
 
 import { beforeAfter } from '../../shared/stats'
-import type { DayAverage, Medication, WindowAverage } from '../../shared/types'
+import type { BeforeAfter, DayAverage, Medication, WindowAverage } from '../../shared/types'
 import { bp, daysText } from './SummaryStrip'
 import { shortDate } from './TrendChart'
 
@@ -18,12 +18,14 @@ function Side({ title, w }: { title: string; w: WindowAverage | null }) {
   )
 }
 
+/** Difference of the displayed (rounded) numbers, so the three figures always add up. */
+export const diffText = ({ before, after }: BeforeAfter) =>
+  before && after ? `${signed(Math.round(after.sys) - Math.round(before.sys))}/${signed(Math.round(after.dia) - Math.round(before.dia))}` : null
+
 export function BeforeAfterCard({ medication, days, onClose }: { medication: Medication; days: DayAverage[]; onClose: () => void }) {
-  const { before, after } = beforeAfter(days, medication.date)
-  // Difference of the displayed (rounded) numbers, so the three figures always add up.
-  const diff = before && after
-    ? `${signed(Math.round(after.sys) - Math.round(before.sys))}/${signed(Math.round(after.dia) - Math.round(before.dia))}`
-    : null
+  const ba = beforeAfter(days, medication.date)
+  const { before, after } = ba
+  const diff = diffText(ba)
   return (
     <section className="ba" aria-label={`Before and after: ${medication.label}`}>
       <div className="ba-head">
