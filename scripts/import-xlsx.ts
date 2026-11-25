@@ -2,6 +2,7 @@
 // Copyright (C) 2026 ackervekenbm
 
 import { readSheet } from 'read-excel-file/node'
+import { parseArgs } from '../src/server/importArgs'
 import { parseSheet } from '../src/server/importSheet'
 
 const usage = 'Usage: npm run import -- <file.xlsx> --to <baseUrl> [--dry-run]'
@@ -10,17 +11,15 @@ if (args.includes('--help') || args.includes('-h')) {
   console.log(usage)
   process.exit(0)
 }
-const dryRun = args.includes('--dry-run')
-const toIdx = args.indexOf('--to')
-const base = toIdx >= 0 ? args[toIdx + 1] : undefined
-const file = args.find((a, i) => !a.startsWith('--') && i !== toIdx + 1)
-if (!file || (!base && !dryRun)) {
+const parsed = parseArgs(args)
+if (!parsed) {
   console.error(usage)
   process.exit(2)
 }
+const { file, base, dryRun } = parsed
 
 async function main() {
-  const { readings, problems } = parseSheet((await readSheet(file!, 'DATA')) as unknown[][])
+  const { readings, problems } = parseSheet((await readSheet(file, 'DATA')) as unknown[][])
   console.log(`Parsed ${readings.length} readings, ${problems.length} problems`)
   problems.forEach((p) => console.log(`  ${p}`))
   if (dryRun) return
