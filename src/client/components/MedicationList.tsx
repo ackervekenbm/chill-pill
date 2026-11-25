@@ -21,7 +21,8 @@ export function MedicationList({ medications, onAdd, onUpdate, onDelete }: Props
   const now = useNow()
   const today = now.slice(0, 10)
   const thisYear = now.slice(0, 4)
-  const [date, setDate] = useState(today)
+  const [picked, setDate] = useState<string | null>(null) // null = follow today, so a PWA left open past midnight doesn't keep yesterday
+  const date = picked ?? today
   const [label, setLabel] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +48,7 @@ export function MedicationList({ medications, onAdd, onUpdate, onDelete }: Props
     try {
       await onAdd({ date, label: l })
       setLabel('')
+      setDate(null)
     } catch (err) {
       setError(`Couldn't add: ${msg(err)}`)
     } finally {

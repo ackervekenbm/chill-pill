@@ -21,7 +21,7 @@ const dayMonth = fmt({ day: 'numeric', month: 'short' })
 const month = fmt({ month: 'short' })
 const monthYear = fmt({ month: 'short', year: '2-digit' })
 const longDate = fmt({ weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-const medDate = fmt({ day: '2-digit', month: 'short' })
+const medDate = fmt({ day: 'numeric', month: 'short' })
 export const shortDate = (day: string) => medDate.format(ts(day))
 
 /** Weekly ticks for a month, otherwise month starts (thinned so about six fit on a phone). */

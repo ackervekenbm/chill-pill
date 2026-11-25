@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 ackervekenbm
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Settings, ThemeId } from '../../shared/types'
 import { settingsSchema } from '../../shared/validation'
 import { exportUrl } from '../api'
@@ -38,6 +38,11 @@ export function SettingsScreen({ settings, onSave }: Props) {
   const [theme, setTheme] = useState<ThemeId>(settings.theme)
   const [sys, setSys] = useState(String(settings.targetSys))
   const [dia, setDia] = useState(String(settings.targetDia))
+  // Every save builds on the latest settings, so a theme tap right after a target blur can't undo the target.
+  const latest = useRef(settings)
+  useEffect(() => {
+    latest.current = settings
+  }, [settings])
 
   const pick = async (id: ThemeId) => {
     if (id === theme) return
@@ -45,9 +50,13 @@ export function SettingsScreen({ settings, onSave }: Props) {
     setError(null)
     setTheme(id)
     applyTheme(id)
+    const next = { ...latest.current, theme: id }
+    const before = latest.current
+    latest.current = next
     try {
-      await onSave({ ...settings, theme: id })
+      await onSave(next)
     } catch (e) {
+      if (latest.current === next) latest.current = before
       setTheme(prev)
       applyTheme(prev)
       setError(`Couldn't save the theme: ${msg(e)}`)
@@ -55,16 +64,19 @@ export function SettingsScreen({ settings, onSave }: Props) {
   }
 
   const saveTargets = async () => {
-    if (sys === String(settings.targetSys) && dia === String(settings.targetDia)) return setTargetError(null)
-    const next = { ...settings, targetSys: Number(sys), targetDia: Number(dia) }
+    if (sys === String(latest.current.targetSys) && dia === String(latest.current.targetDia)) return setTargetError(null)
+    const before = latest.current
+    const next = { ...before, targetSys: Number(sys), targetDia: Number(dia) }
     const parsed = settingsSchema.safeParse(sys.trim() === '' || dia.trim() === '' ? {} : next)
     if (!parsed.success) return setTargetError('Systolic must be 60–260 and diastolic 30–160, whole numbers')
     if (next.targetSys <= next.targetDia) return setTargetError('Systolic target must be higher than diastolic')
     setTargetError(null)
     setError(null)
+    latest.current = next
     try {
       await onSave(next)
     } catch (e) {
+      if (latest.current === next) latest.current = before
       setError(`Couldn't save the targets: ${msg(e)}`) // typed values stay in the fields
     }
   }

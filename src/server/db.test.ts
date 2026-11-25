@@ -78,3 +78,8 @@ describe('importReadings', () => {
     expect(listReadings(db)[0].note).toBe('n')
   })
 })
+
+it('stamps a fresh database with schema version 1', () => {
+  const { db } = tempDb()
+  expect(db.pragma('user_version', { simple: true })).toBe(1)
+})

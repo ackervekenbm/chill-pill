@@ -38,6 +38,16 @@ describe('SettingsScreen', () => {
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({ ...DEFAULT_SETTINGS, targetSys: 130 }))
   })
 
+  it('picking a theme right after editing a target keeps the new target', async () => {
+    const onSave = setup()
+    const sys = screen.getByLabelText('Systolic target')
+    await userEvent.clear(sys)
+    await userEvent.type(sys, '130')
+    await userEvent.click(screen.getByRole('radio', { name: /Warm editorial/ }))
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(2))
+    expect(onSave).toHaveBeenLastCalledWith({ ...DEFAULT_SETTINGS, targetSys: 130, theme: 'editorial' })
+  })
+
   it('does not save an out-of-range target', async () => {
     const onSave = setup()
     const sys = screen.getByLabelText('Systolic target')

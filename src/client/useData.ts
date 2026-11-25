@@ -36,6 +36,23 @@ export function useData() {
     }
   }, [])
 
+  // PWA resumed from the background: refresh quietly. A failure keeps what is on screen (no error screen over typed values).
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return
+      Promise.all([api.getReadings(), api.getMedications(), api.getSettings()]).then(
+        ([r, m, s]) => {
+          setReadings(r)
+          setMedications(m)
+          setSettings(s)
+        },
+        () => {},
+      )
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [])
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- initial load
     void reload()

@@ -4,6 +4,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { expect, it } from 'vitest'
 import { fakeApi, reading } from './test/fakeApi'
+import { addReading } from './api'
 import { useData } from './useData'
 
 const NEW = { takenAt: '2026-11-21T08:00', sys: 130, dia: 85, pulse: 65 }
@@ -32,4 +33,21 @@ it('a rejected mutation leaves state unchanged', async () => {
     await expect(result.current.addReading(NEW)).rejects.toThrow()
   })
   expect(result.current.readings).toHaveLength(1)
+})
+
+it('refreshes silently when the app becomes visible again, and keeps state if that fails', async () => {
+  const api = fakeApi({ readings: [reading({ id: 1 })] })
+  const { result } = renderHook(() => useData())
+  await waitFor(() => expect(result.current.loading).toBe(false))
+  await addReading(NEW)
+  await act(async () => {
+    document.dispatchEvent(new Event('visibilitychange'))
+  })
+  await waitFor(() => expect(result.current.readings).toHaveLength(2))
+  api.failNext()
+  await act(async () => {
+    document.dispatchEvent(new Event('visibilitychange'))
+  })
+  expect(result.current.error).toBeNull()
+  expect(result.current.readings).toHaveLength(2)
 })

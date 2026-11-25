@@ -36,6 +36,7 @@ export function openDb(dataDir: string): CpDb {
     );
     CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
   `)
+  db.pragma('user_version = 1') // baseline for future migrations
   return db
 }
 
