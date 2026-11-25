@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 ackervekenbm
 
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { nowLocal } from '../../shared/dates'
@@ -109,4 +109,36 @@ it('reveals the note and sends it', async () => {
   await fill()
   await userEvent.click(screen.getByRole('button', { name: 'Save reading 1' }))
   expect(onAdd).toHaveBeenCalledWith(expect.objectContaining({ note: 'after coffee' }))
+})
+
+it('guards against two synchronous submits', async () => {
+  const onAdd = vi.fn(() => new Promise<ReturnType<typeof reading>>(() => {}))
+  setup({ onAdd })
+  await fill()
+  const form = box('SYS').closest('form')!
+  fireEvent.submit(form)
+  fireEvent.submit(form)
+  expect(onAdd).toHaveBeenCalledTimes(1)
+})
+
+it('does not flash a range error while typing a normal value', async () => {
+  setup()
+  await userEvent.type(box('SYS'), '1')
+  expect(screen.queryByText(/Enter 60/)).not.toBeInTheDocument()
+})
+
+it('selects the content when advancing into a filled field', async () => {
+  setup()
+  await userEvent.type(box('DIA'), '88')
+  await userEvent.type(box('SYS'), '145')
+  expect(box('DIA')).toHaveFocus()
+  expect((box('DIA') as HTMLInputElement).selectionEnd).toBe(2)
+})
+
+it('says so when undo fails', async () => {
+  setup({ onUndo: vi.fn().mockRejectedValue(new ApiError(0, 'offline')) })
+  await fill()
+  await userEvent.click(screen.getByRole('button', { name: 'Save reading 1' }))
+  await userEvent.click(await screen.findByRole('button', { name: 'Undo' }))
+  expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't undo: offline")
 })

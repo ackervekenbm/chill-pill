@@ -27,6 +27,7 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
   const [note, setNote] = useState('')
   const [noteOpen, setNoteOpen] = useState(false)
   const [picked, setPicked] = useState<string | null>(null) // null = follow the clock
+  const [blurred, setBlurred] = useState<Record<string, boolean>>({})
   const [saving, setSaving] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [banner, setBanner] = useState<string | null>(null)
@@ -53,19 +54,25 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
   const count = day?.count ?? 0
   const takenAt = picked ?? now
 
-  const fieldErr = (f: Field) => errors[f] ?? fieldError(f, text[f])
+  // Range errors wait until the value could be complete (or the field is left), so typing '1' doesn't flash red.
+  const liveErr = (f: Field) => (blurred[f] || shouldAdvance(f, text[f]) ? fieldError(f, text[f]) : null)
+  const fieldErr = (f: Field) => errors[f] ?? liveErr(f)
   const complete = FIELDS.every((f) => text[f.key].trim() !== '' && !fieldError(f.key, text[f.key]))
   const parsed = complete
     ? newReadingSchema.safeParse({ takenAt, sys: Number(text.sys), dia: Number(text.dia), pulse: Number(text.pulse), note })
     : null
-  const diaMsg = errors.dia ?? fieldError('dia', text.dia) ?? parsed?.error?.issues.find((i) => i.path[0] === 'dia')?.message ?? null
+  const diaMsg = errors.dia ?? liveErr('dia') ?? parsed?.error?.issues.find((i) => i.path[0] === 'dia')?.message ?? null
   const valid = !!parsed?.success
 
   const edit = (f: Field, v: string) => {
     setText((t) => ({ ...t, [f]: v }))
     setErrors((e) => Object.fromEntries(Object.entries(e).filter(([k]) => k !== f)))
     const i = FIELDS.findIndex((x) => x.key === f)
-    if (v && !fieldError(f, v) && shouldAdvance(f, v) && i < 2) refs.current[FIELDS[i + 1].key]?.focus()
+    if (v && !fieldError(f, v) && shouldAdvance(f, v) && i < 2) {
+      const el = refs.current[FIELDS[i + 1].key]
+      el?.focus()
+      el?.select()
+    }
   }
 
   const submit = useCallback(
@@ -103,7 +110,7 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
     try {
       await onUndo(id)
     } catch (err) {
-      setBanner((err as Error).message)
+      setBanner(`Couldn't undo: ${(err as Error).message}`)
     }
   }
 
@@ -145,6 +152,7 @@ export function TodayCard({ readings, onAdd, onUndo }: Props) {
                 aria-describedby={`today-${f.key}-err`}
                 value={text[f.key]}
                 onChange={(e) => edit(f.key, e.target.value)}
+                onBlur={() => setBlurred((b) => ({ ...b, [f.key]: true }))}
               />
               <label htmlFor={`today-${f.key}`} className="label">{f.label}</label>
               <div id={`today-${f.key}-err`} className="field-err">{f.key === 'dia' ? diaMsg : fieldErr(f.key)}</div>

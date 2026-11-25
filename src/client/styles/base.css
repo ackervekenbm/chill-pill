@@ -46,7 +46,7 @@ h1, h2, h3 { margin: 0; line-height: 1.15; }
   background: var(--primary-bg);
   color: var(--primary-fg);
   font-weight: 600;
-  transition: transform 0.12s, opacity 0.12s;
+  transition: transform 0.12s;
 }
 .btn-primary:active { transform: scale(0.98); }
 .btn-primary:disabled { opacity: 0.55; cursor: default; }

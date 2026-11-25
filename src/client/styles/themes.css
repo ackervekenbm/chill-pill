@@ -3,6 +3,7 @@
    buttons) with --accent-contrast on top. --med is purple in every theme. */
 :root,
 :root[data-theme='calm'] {
+  --danger: #c0352f;
   color-scheme: light;
   --bg: #f4f6f8;
   --card: #ffffff;
@@ -30,6 +31,7 @@
 }
 
 :root[data-theme='dashboard'] {
+  --danger: #ff8a8a;
   color-scheme: dark;
   --bg: #0b1020;
   --card: #161d36;
@@ -55,6 +57,7 @@
 }
 
 :root[data-theme='editorial'] {
+  --danger: #b3261e;
   color-scheme: light;
   --bg: #f6f1ea;
   --card: #fffdf9;
