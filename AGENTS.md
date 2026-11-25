@@ -31,6 +31,43 @@ build leaves tests and `src/server/test/` out.
 
 **Verification for every change is `npm run build && npm test`.**
 
+Other scripts:
+
+```bash
+npm run dev                          # API on :3094 + Vite on :5184 (proxies /api)
+npm run seed -- --to <url>           # made-up demo readings into an EMPTY instance
+npm run import -- <file.xlsx> --to <url> [--dry-run]   # one-time spreadsheet import
+npm run icons                        # regenerate public/ icons from scripts/gen-icons.mjs
+node scripts/banner.mjs              # docs/banner.png from scripts/banner.html
+node scripts/screenshots.mjs [url]   # docs/screenshots/*.png; seeds the empty instance at url
+```
+
+The banner and screenshot scripts need Playwright, which is deliberately **not**
+a dependency: `npm i --no-save playwright && npx playwright install chromium`,
+and leave `package.json` / `package-lock.json` unchanged. The screenshot script
+refuses an instance that already has readings; run it against a fresh
+`DATA_DIR` (e.g. `npm run build && DATA_DIR=$(mktemp -d) PORT=3991 npm start`).
+
+## CI and Docker
+
+- `.github/workflows/ci.yml` — job `check`: `npm ci`, `npm run build`,
+  `npm test` on every PR and on `main`.
+- `.github/workflows/docker-build.yml` — job `smoke` on every PR: builds the
+  image, boots it with no settings, polls `/api/health`, asserts
+  `/api/readings` is `[]`, the app shell is `no-cache` and `/assets/*` is
+  `immutable`, the app runs as `node` (uid 1000), and a root-owned data volume
+  is taken over. On `main`, native amd64 + arm64 builds are merged into
+  `ghcr.io/ackervekenbm/chill-pill:latest` and `:<sha7>`.
+- `check` and `smoke` are the required checks. Actions are pinned by SHA;
+  Dependabot (`.github/dependabot.yml`) bumps npm (grouped), actions and the
+  digest-pinned `node:22-alpine` base image.
+- The image: a two-stage `Dockerfile`, production deps only, data in
+  `/app/data` (`chill-pill.db`), port `3000`, `HEALTHCHECK` on `/api/health`.
+  `docker-entrypoint.sh` (installed as `chill-pill-entrypoint`) hands the data
+  folder to `node` and drops root with `su-exec`. Settings: `PORT`, `HOST`,
+  `DATA_DIR` (see `docs/deployment.md`). Keep `.dockerignore` excluding
+  `data/`, so a local database never ends up in an image.
+
 ## Health data (MANDATORY)
 
 Never commit spreadsheets, CSVs, databases or fixtures made from real
