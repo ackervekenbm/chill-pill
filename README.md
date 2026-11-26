@@ -50,8 +50,7 @@ Raspberry Pi or any other box at home, and your readings never leave it.
   <img src="docs/screenshots/calm-desktop.png" width="900" alt="Chill Pill on a desktop: today's entry and medication changes on the left, the trend chart and history on the right">
 </p>
 
-<details>
-<summary><strong>Run it</strong></summary>
+## Quick start
 
 You need **Docker**. Nothing else: no accounts, no keys.
 
@@ -62,13 +61,53 @@ docker compose up -d
 
 Open <http://localhost:8184> (or `http://<server-ip>:8184` from your phone)
 and save your first reading. The image is public and built for `amd64` and
-`arm64`, so any 64-bit OS works, a Raspberry Pi included.
+`arm64`, so any 64-bit OS works, a Raspberry Pi included. Updating is
+`docker compose pull && docker compose up -d`; your readings stay in the
+`chill-pill-data` volume. For OpenMediaVault and other setups, see
+[Deployment](#deployment).
 
-Updating is `docker compose pull && docker compose up -d`; your readings stay
-in the `chill-pill-data` volume, and **Settings → About** shows which build
-is running. OpenMediaVault, settings, backups and HTTPS
-are in [docs/deploy/](docs/deploy/README.md), with a guide per setup:
-prebuilt image, OpenMediaVault, built from a checkout, bare Node.
+## Features in detail
+
+<details>
+<summary><strong>Logging a reading</strong></summary>
+
+- The entry card opens on systolic with the number pad up, and jumps to diastolic and pulse as soon as a value is complete. Add a note if you like.
+- Date and time are filled in for you. Change them to add a reading you took earlier.
+- Saved by mistake? **Undo** takes it back.
+- Readings before noon count as morning readings, from noon on as evening ones.
+
+</details>
+
+<details>
+<summary><strong>History and the daily average</strong></summary>
+
+- **History** lists your days, newest first, each with its daily average. However many readings you take in a day, they become one average, and every day counts the same in the trend.
+- Open a day to see its readings. **Edit** changes the date, time, numbers or note; **Delete** removes a reading, with **Undo** for a few seconds.
+
+</details>
+
+<details>
+<summary><strong>The trend and your target</strong></summary>
+
+- The chart follows the calendar: 1M, 3M, 6M, 1Y or All, with every point at its date, so a week without readings still takes a week of room.
+- Show all readings, mornings only or evenings only.
+- Dashed lines show your target. A day counts as on target when its average is below both numbers; the summary shows your average and the share of days on target.
+
+</details>
+
+<details>
+<summary><strong>Medication changes</strong></summary>
+
+- Note a change with a date and a label ("Started Examplol 5 mg") and it shows as a marker on the chart.
+- Tap a marker to compare the month before the change with the month after.
+
+</details>
+
+<details>
+<summary><strong>Doctor report and CSV export</strong></summary>
+
+- **Settings → Doctor report** opens a clean, printable page with the summary, the chart, your medication changes and every reading. Print it or save it as a PDF.
+- **Settings → Export CSV** downloads every reading and medication change as one file that opens in any spreadsheet.
 
 </details>
 
@@ -106,14 +145,53 @@ Running it twice adds nothing twice. Details:
 </details>
 
 <details>
-<summary><strong>Develop</strong></summary>
+<summary><strong>Settings and about</strong></summary>
+
+**Settings** holds the theme (Clinical calm, Dark dashboard or Warm editorial),
+your blood pressure target, and the links to the doctor report and the CSV
+export. At the bottom, **About** says which build is running (the commit,
+linked to GitHub, and when it was built; "development build" when you run it
+yourself), with links to the source, the issue tracker, the author and the
+license.
+
+</details>
+
+## Where your data lives
+
+Everything is in one SQLite file on your server (`/app/data/chill-pill.db` in
+the container): your readings and notes, medication changes and your settings,
+theme included. The browser keeps nothing. Back up that folder, or use
+**Settings → Export CSV** for a copy you can open anywhere. No accounts, no
+tracking, no telemetry: the app doesn't call out to anything.
+
+There is **no login**, so keep Chill Pill on your home network or tailnet, and
+never forward a port to it from the internet.
+
+Chill Pill shows your numbers against the target you choose. It doesn't
+diagnose anything; talk to your doctor about what the numbers mean.
+
+## Deployment
+
+One small process serves the app and its API; there is nothing to configure.
+Pick a route in [docs/deploy/](docs/deploy/README.md):
+
+| Route | Guide |
+|---|---|
+| **Prebuilt image** with Docker Compose (start here) | [docker-image.md](docs/deploy/docker-image.md) |
+| **OpenMediaVault** with its Compose plugin (the reference setup) | [openmediavault.md](docs/deploy/openmediavault.md) |
+| **Docker**, built from a checkout | [from-source-docker.md](docs/deploy/from-source-docker.md) |
+| **Bare Node** with systemd | [from-source-node.md](docs/deploy/from-source-node.md) |
+
+Settings, updating, rollback and backups are in [operations.md](docs/deploy/operations.md); HTTPS behind a reverse proxy in [https.md](docs/deploy/https.md); fixes in [troubleshooting.md](docs/deploy/troubleshooting.md).
+
+## Development
 
 You need Node 22 or newer.
 
 ```bash
 npm install
 npm run dev                 # API on :3094, app on :5184 (open this one)
-npm run seed -- --to http://localhost:3094   # fill an empty dev instance (it refuses one that already has readings) with made-up readings
+npm run seed -- --to http://localhost:3094   # made-up readings into an empty dev instance
 ```
 
 ```bash
@@ -124,36 +202,33 @@ npm run icons               # redraw the app icons from scripts/gen-icons.mjs
 
 The README banner and screenshots come from `scripts/banner.mjs` and
 `scripts/screenshots.mjs` (made-up demo data only; Playwright is installed for
-the run, not as a dependency). Architecture and conventions are in
-[AGENTS.md](AGENTS.md).
-
-Tech stack: React 19 · TypeScript · Vite · Recharts · Express 5 ·
-better-sqlite3 · Vitest + Testing Library.
-
-</details>
+the run, not as a dependency).
 
 <details>
-<summary><strong>Data &amp; privacy</strong></summary>
+<summary><strong>Project structure</strong></summary>
 
-- Everything lives in one SQLite file on your own server
-  (`/app/data/chill-pill.db` in the container): readings, notes, medication
-  changes and your settings. Back up that folder, or use **Settings → Export
-  CSV** for a copy you can open anywhere.
-- There is **no login**. Anyone who can reach the app can read and change your
-  readings, so keep it on your home network or tailnet and never forward a
-  port to it from the internet.
-- No accounts, no tracking, no telemetry. The app doesn't call out to anything.
-- Chill Pill shows your numbers against the target you choose. It doesn't
-  diagnose anything; talk to your doctor about what the numbers mean.
+```
+src/
+├── client/          React app: screens, components, data hook, themes
+├── server/          Express API, SQLite store, CSV export, spreadsheet import
+└── shared/          types, validation and statistics used by both
+scripts/             demo seed, spreadsheet import, icons, README banner and screenshots
+docs/                deployment guides, README banner and screenshots
+```
+
+Tech stack: React 19 · TypeScript · Vite · Recharts · Express 5 ·
+better-sqlite3 · Vitest + Testing Library. Architecture and conventions are in
+[AGENTS.md](AGENTS.md).
 
 </details>
 
 ## Contributing
 
-Issues and pull requests are welcome; `npm run build && npm test` must pass,
-and the README and docs change in the same pull request when what they
-describe changes (see [AGENTS.md](AGENTS.md)). Security problems: see
-[SECURITY.md](SECURITY.md).
+Issues and pull requests are welcome. Every change starts with an issue and
+lands as one pull request with `Fixes #<n>`; `npm run build && npm test` must
+pass, and the README and docs change in the same pull request when what they
+describe changes. The details are in [AGENTS.md](AGENTS.md). Security problems:
+see [SECURITY.md](SECURITY.md).
 
 ## License
 
