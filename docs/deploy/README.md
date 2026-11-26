@@ -53,3 +53,4 @@ Images are built from every commit on `main` and published to
 `ghcr.io/ackervekenbm/chill-pill` as `:latest` and `:<sha7>`, for `amd64` and
 `arm64`. The package is public, so pulling needs no login.
 [operations.md](operations.md#rollback) has how to pin or roll back.
+**Settings → About** in the app shows which commit is running.

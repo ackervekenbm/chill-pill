@@ -7,18 +7,56 @@ import { settingsSchema } from '../../shared/validation'
 import { exportUrl } from '../api'
 import { applyTheme, THEMES } from '../theme'
 
+export interface BuildInfo {
+  /** Full commit hash, or 'dev' for a local build. */
+  sha: string
+  /** ISO-8601 commit time, or '' when unknown. */
+  time: string
+  /** GitHub owner/name. */
+  repo: string
+  /** package.json `license`. */
+  license: string
+}
+
+const BUILD: BuildInfo = { sha: __BUILD_SHA__, time: __BUILD_TIME__, repo: __REPO__, license: __LICENSE__ }
+
 interface Props {
   settings: Settings
   onSave: (s: Settings) => Promise<unknown>
+  build?: BuildInfo
 }
 
 const msg = (e: unknown) => (e instanceof Error ? e.message : 'Something went wrong')
 
-function buildLine() {
-  if (__BUILD_SHA__ === 'dev') return 'Chill Pill · development build'
-  const t = __BUILD_TIME__ ? new Date(__BUILD_TIME__) : null
+const Ext = ({ href, children }: { href: string; children: string }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+)
+
+function About({ build }: { build: BuildInfo }) {
+  const gh = `https://github.com/${build.repo}`
+  const owner = build.repo.split('/')[0]
+  const t = build.time ? new Date(build.time) : null
   const built = t && !isNaN(+t) ? t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).replace('Sept', 'Sep') : ''
-  return `Chill Pill · ${__BUILD_SHA__.slice(0, 7)}${built ? ` · built ${built}` : ''}`
+  return (
+    <section aria-labelledby="set-about">
+      <h3 className="set-h" id="set-about">About</h3>
+      <p className="muted">Chill Pill · blood pressure tracker</p>
+      <dl className="about">
+        <dt>Build</dt>
+        <dd>
+          {build.sha === 'dev' ? 'development build' : <><Ext href={`${gh}/commit/${build.sha}`}>{build.sha.slice(0, 7)}</Ext>{built && ` · ${built}`}</>}
+        </dd>
+        <dt>Source</dt>
+        <dd><Ext href={gh}>{build.repo}</Ext></dd>
+        <dt>Feedback</dt>
+        <dd><Ext href={`${gh}/issues`}>Report an issue</Ext></dd>
+        <dt>Made by</dt>
+        <dd><Ext href={`https://github.com/${owner}`}>{owner}</Ext></dd>
+        <dt>License</dt>
+        <dd>{build.license ? <Ext href={`${gh}/blob/main/LICENSE`}>{build.license}</Ext> : 'not chosen yet'}</dd>
+      </dl>
+    </section>
+  )
 }
 
 /** A theme card's mini preview: the theme's background, a sparkline and a dot in its accent. */
@@ -32,7 +70,7 @@ function Preview({ bg, accent }: { bg: string; accent: string }) {
   )
 }
 
-export function SettingsScreen({ settings, onSave }: Props) {
+export function SettingsScreen({ settings, onSave, build = BUILD }: Props) {
   const [error, setError] = useState<string | null>(null)
   const [targetError, setTargetError] = useState<string | null>(null)
   const [theme, setTheme] = useState<ThemeId>(settings.theme)
@@ -118,7 +156,7 @@ export function SettingsScreen({ settings, onSave }: Props) {
         <a className="btn-link" href="/report">Doctor report</a>
       </div>
 
-      <p className="about">{buildLine()}</p>
+      <About build={build} />
     </section>
   )
 }

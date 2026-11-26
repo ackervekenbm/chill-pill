@@ -65,7 +65,8 @@ and save your first reading. The image is public and built for `amd64` and
 `arm64`, so any 64-bit OS works, a Raspberry Pi included.
 
 Updating is `docker compose pull && docker compose up -d`; your readings stay
-in the `chill-pill-data` volume. OpenMediaVault, settings, backups and HTTPS
+in the `chill-pill-data` volume, and **Settings → About** shows which build
+is running. OpenMediaVault, settings, backups and HTTPS
 are in [docs/deploy/](docs/deploy/README.md), with a guide per setup:
 prebuilt image, OpenMediaVault, built from a checkout, bare Node.
 
