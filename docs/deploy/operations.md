@@ -17,6 +17,12 @@ All optional. The image already sets them; in Docker change one with an
 Theme and target values are chosen in the app (**Settings**) and stored in the
 database.
 
+## Which build is running?
+
+**Settings → About** shows the commit and build time. A build without them
+(bare Node, or an image built without the build arguments) says
+"development build".
+
 ## What lives where
 
 `chill-pill.db` in the data folder is the only state: your readings,

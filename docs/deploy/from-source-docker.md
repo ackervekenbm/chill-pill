@@ -17,7 +17,9 @@ changes. It is the same image CI publishes, built on your machine.
 ```bash
 git clone https://github.com/ackervekenbm/chill-pill.git
 cd chill-pill
-docker build -t ghcr.io/ackervekenbm/chill-pill:latest .
+docker build -t ghcr.io/ackervekenbm/chill-pill:latest \
+  --build-arg COMMIT_SHA=$(git rev-parse HEAD) \
+  --build-arg BUILD_TIME=$(git log -1 --format=%cI) .
 docker compose up -d
 curl http://localhost:8184/api/health     # {"ok":true}
 ```
@@ -25,7 +27,8 @@ curl http://localhost:8184/api/health     # {"ok":true}
 Tagging the build with the image name the compose file uses makes
 `docker compose up` run your build instead of pulling. Don't run
 `docker compose pull` afterwards: it would replace your build with the
-published one.
+published one. The build arguments are optional; they fill in
+**Settings → About**.
 
 Everything else (the `chill-pill-data` volume, the healthcheck, the `node`
 user) is as in [docker-image.md](docker-image.md#run-it-with-compose).
@@ -34,7 +37,9 @@ user) is as in [docker-image.md](docker-image.md#run-it-with-compose).
 
 ```bash
 git pull
-docker build -t ghcr.io/ackervekenbm/chill-pill:latest .
+docker build -t ghcr.io/ackervekenbm/chill-pill:latest \
+  --build-arg COMMIT_SHA=$(git rev-parse HEAD) \
+  --build-arg BUILD_TIME=$(git log -1 --format=%cI) .
 docker compose up -d
 ```
 

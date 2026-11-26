@@ -29,7 +29,10 @@
 .set-links { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn-link { display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; background: var(--inset); border-radius: 14px; font-weight: 600; color: var(--accent); text-decoration: none; }
 .btn-link:hover { filter: brightness(0.97); }
-.about { margin: 26px 0 0; font-size: 0.82rem; color: var(--muted); }
+.about { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 8px 0 0; font-size: 0.88rem; }
+.about dt { color: var(--muted); }
+.about dd { margin: 0; overflow-wrap: anywhere; }
+.about a { color: var(--accent); }
 @media (max-width: 420px) { .theme-name { font-size: 0.78rem; } }
 .fld .field { width: 100%; min-width: 0; box-sizing: border-box; }
 .target-row .fld { min-width: 0; }
