@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 ackervekenbm
 
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { TodayCard } from './components/TodayCard'
 import { HistoryPanel } from './components/HistoryPanel'
 import { MedicationList } from './components/MedicationList'
@@ -20,7 +20,8 @@ export function App() {
   const theme = data.settings.theme
   const todayDate = useNow().slice(0, 10)
 
-  useEffect(() => applyTheme(theme), [theme])
+  // Before paint, so the first frame after loading never shows the default theme.
+  useLayoutEffect(() => applyTheme(theme), [theme])
 
   if (data.loading && data.readings.length === 0 && !data.error) {
     return <div className="state" role="status">Loading…</div>

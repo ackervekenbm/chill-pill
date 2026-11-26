@@ -7,11 +7,20 @@ import { expect, it } from 'vitest'
 import { App } from './App'
 import { fakeApi } from './test/fakeApi'
 
-it('loads, applies the saved theme and shows the shell', async () => {
+it('shows the shell already in the saved theme', async () => {
   fakeApi({ settings: { theme: 'dashboard', targetSys: 135, targetDia: 85 } })
-  render(<App />)
-  expect(await screen.findByRole('navigation', { name: 'Main' })).toBeInTheDocument()
-  expect(document.documentElement.dataset.theme).toBe('dashboard')
+  // Read the theme the instant the nav lands in the DOM: an effect that runs later (after paint) would still show 'calm' here.
+  const themeWhenShown = await new Promise<string | undefined>((resolve) => {
+    const mo = new MutationObserver(() => {
+      if (!document.querySelector('nav[aria-label="Main"]')) return
+      mo.disconnect()
+      resolve(document.documentElement.dataset.theme)
+    })
+    mo.observe(document.body, { childList: true, subtree: true })
+    render(<App />)
+  })
+  expect(themeWhenShown).toBe('dashboard')
+  expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument()
 })
 
 it('offers a retry when loading fails', async () => {
