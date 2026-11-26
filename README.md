@@ -66,7 +66,8 @@ and save your first reading. The image is public and built for `amd64` and
 
 Updating is `docker compose pull && docker compose up -d`; your readings stay
 in the `chill-pill-data` volume. OpenMediaVault, settings, backups and HTTPS
-are in [docs/deployment.md](docs/deployment.md).
+are in [docs/deploy/](docs/deploy/README.md), with a guide per setup:
+prebuilt image, OpenMediaVault, built from a checkout, bare Node.
 
 </details>
 
@@ -99,7 +100,7 @@ It reads the `DATA` tab: a `Date` column and up to three groups of systolic,
 diastolic and pulse per row. Empty rows are skipped and incomplete ones are
 listed. Imported readings have no time, so they count as morning readings.
 Running it twice adds nothing twice. Details:
-[docs/deployment.md](docs/deployment.md#importing-a-spreadsheet-one-time).
+[docs/deploy/operations.md](docs/deploy/operations.md#importing-a-spreadsheet-one-time).
 
 </details>
 

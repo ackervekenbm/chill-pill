@@ -65,8 +65,13 @@ refuses an instance that already has readings; run it against a fresh
   `/app/data` (`chill-pill.db`), port `3000`, `HEALTHCHECK` on `/api/health`.
   `docker-entrypoint.sh` (installed as `chill-pill-entrypoint`) hands the data
   folder to `node` and drops root with `su-exec`. Settings: `PORT`, `HOST`,
-  `DATA_DIR` (see `docs/deployment.md`). Keep `.dockerignore` excluding
+  `DATA_DIR` (see `docs/deploy/operations.md`). Keep `.dockerignore` excluding
   `data/`, so a local database never ends up in an image.
+- Deployment docs: one guide per route in `docs/deploy/` (`README.md` picks
+  the route and states the contract they share): prebuilt image, OpenMediaVault
+  (reference), Docker from a checkout, bare Node under systemd. Settings,
+  backups, rollback and the spreadsheet import are in `operations.md`, next to
+  `https.md` and `troubleshooting.md`.
 
 ## Health data (MANDATORY)
 
@@ -80,5 +85,5 @@ that way. Tests, fixtures and screenshots use made-up numbers only.
 Update it in the **same PR** when you add, remove or rename a feature, a
 control or a setting; change a command, script, port, environment variable or
 image tag; or change what is stored where. If nothing in the README is
-affected, say so in the PR description. AGENTS.md and `docs/deployment.md`
+affected, say so in the PR description. AGENTS.md and `docs/deploy/`
 follow the same rule.
