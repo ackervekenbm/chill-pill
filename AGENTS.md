@@ -101,6 +101,15 @@ the screenshots is invented, never real data. If nothing in the README is
 affected, say so in the PR description. AGENTS.md and `docs/deploy/` follow
 the same rule.
 
+## README screenshots
+
+The README images in `docs/screenshots/` (every theme, phone and desktop) come
+from `scripts/screenshots.mjs`, which seeds an empty instance with the made-up
+demo readings of `npm run seed` and captures it with Playwright (installed with
+`--no-save`, deliberately not a dependency; the steps are at the top of the
+script). Never put real readings in them. When a screen in the screenshots
+changes visibly, regenerate them in the same PR; the PR template asks.
+
 ## Issue-first workflow (MANDATORY)
 
 Before starting any new work item, create a GitHub issue:
