@@ -4,3 +4,4 @@ Fixes #
 
 - [ ] `npm run build && npm test` passes locally
 - [ ] README, AGENTS.md and `docs/deploy/` updated, or not affected (say so below)
+- [ ] Screenshots regenerated, or no screen in them changed
