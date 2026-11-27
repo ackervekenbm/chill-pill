@@ -66,12 +66,14 @@ export function ReportPage({ readings, medications, settings, initialRange = '3M
       <div className="rp-controls">
         <a className="rp-back" href="/">← Back to app</a>
         <RangeChips label="Period" options={RANGES} value={range} onChange={pick} />
-        <label className="rp-date">From
-          <input type="date" value={custom.from} max={custom.to || undefined} onChange={(e) => setCustom({ ...custom, from: e.target.value })} />
-        </label>
-        <label className="rp-date">To
-          <input type="date" value={custom.to} onChange={(e) => setCustom({ ...custom, to: e.target.value })} />
-        </label>
+        <div className="rp-dates">
+          <label className="rp-date">From
+            <input type="date" value={custom.from} max={custom.to || undefined} onChange={(e) => setCustom({ ...custom, from: e.target.value })} />
+          </label>
+          <label className="rp-date">To
+            <input type="date" value={custom.to} onChange={(e) => setCustom({ ...custom, to: e.target.value })} />
+          </label>
+        </div>
         <button type="button" className="btn-primary" onClick={() => window.print()}>Print / save as PDF</button>
         {invalid && <p className="rp-error" role="alert">From must be on or before To.</p>}
       </div>
