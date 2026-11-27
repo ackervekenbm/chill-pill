@@ -13,6 +13,7 @@
   background: var(--inset); border: 2px solid transparent; border-radius: 14px;
 }
 .in-box:focus { outline: none; border-color: var(--accent-solid); }
+.in-box:focus::placeholder { color: transparent; }
 .in-box[aria-invalid='true'] { border-color: var(--danger); }
 .field-err { min-height: 1.2em; font-size: 0.78rem; color: var(--danger); }
 
